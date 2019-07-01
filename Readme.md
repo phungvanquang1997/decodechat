@@ -8,8 +8,6 @@ A simple chat demo for socket.io
 ```
 $ cd socket.io
 $ npm install
-$ cd examples/chat
-$ npm install
 $ npm start
 ```
 
