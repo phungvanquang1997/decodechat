@@ -7,6 +7,13 @@ $(function() {
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
 
+  loadOldMessages = function(){
+    $.ajax({url: '/api/v1/readfile', success: function(result){
+       //$('.messages').append(result.data);
+       addMessageElement(result.data,{prepend: false});
+    }});
+  }
+
   // Initialize variables
   var $window = $(window);
   var $usernameInput = $('.usernameInput'); // Input for username
@@ -28,17 +35,19 @@ $(function() {
   const addParticipantsMessage = (data) => {
     var message = '';
     if (data.numUsers === 1) {
-      message += "there's 1 participant";
+      message += "01 người tham gia phòng chat";
     } else {
-      message += "there are " + data.numUsers + " participants";
+      message += "Hiện có " + data.numUsers + " tham gia phòng chat";
     }
-    log(message);
+    log(message,{
+      prepend: true
+    });
   }
 
   // Sets the client's username
   const setUsername = () => {
-    username = cleanInput($usernameInput.val().trim());
 
+    username = cleanInput($usernameInput.val().trim());
     // If the username is valid
     if (username) {
       $loginPage.fadeOut();
@@ -245,10 +254,55 @@ $(function() {
   socket.on('user joined', (data) => {
     log(data.username + ' joined');
     addParticipantsMessage(data);
+    oldMessages = $('.messages').html();
+
+      var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost:3000/api/v1/writefile",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "*/*",
+          "Cache-Control": "no-cache",
+          "accept-encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "cache-control": "no-cache"
+        },
+        "data": JSON.stringify({data: oldMessages}),
+      };
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+    });
   });
 
   // Whenever the server emits 'user left', log it in the chat body
   socket.on('user left', (data) => {
+    if(data.numUsers == 1) {
+      oldMessages = $('.messages').html();
+
+      var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "http://localhost:3000/api/v1/writefile",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "*/*",
+          "Cache-Control": "no-cache",
+          "accept-encoding": "gzip, deflate",
+          "Connection": "keep-alive",
+          "cache-control": "no-cache"
+        },
+        "data": JSON.stringify({data: oldMessages}),
+      };
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+    });
+
+    } 
     log(data.username + ' left');
     addParticipantsMessage(data);
     removeChatTyping(data);
@@ -278,5 +332,6 @@ $(function() {
   socket.on('reconnect_error', () => {
     log('attempt to reconnect has failed');
   });
+  loadOldMessages();
 
 });

@@ -3,12 +3,17 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var server = require('http').createServer(app);
+var fs = require('fs');
 var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
+var bodyParser = require('body-parser');
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
 });
+
+// parse application/json
+app.use(bodyParser.json());
 
 // Routing
 app.use(express.static(path.join(__dirname, 'public')));
@@ -72,5 +77,20 @@ io.on('connection', (socket) => {
         numUsers: numUsers
       });
     }
+  });
+});
+
+app.get('/api/v1/readfile',(req,res) => {
+  fs.readFile('old_message.txt',"utf-8", (err, data) => {
+      if (err) { console.log(err) }
+      res.send({data: data});
+    });
+});
+
+app.post('/api/v1/writefile',(req,res) => {
+  fs.appendFile("old_message.txt", req.body.data, (err) => {
+    if (err) console.log(err);
+    console.log("Successfully Written to File.");
+    res.send('ok');
   });
 });
