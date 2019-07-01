@@ -147,3 +147,20 @@ ul {
   right: 0;
   width: 100%;
 }
+
+.messageBody {
+color: transparent;
+text-shadow: 0 0 20px rgba(0,0,0,0.5);
+text-align: center;
+height: 120px;
+line-height: 60px;
+font-size: 40px;
+-webkit-transition: text-shadow 1.9s; 
+-moz-transition: text-shadow 1.9s;
+}
+ 
+.messageBody:hover {
+text-shadow: 0 0 0 rgba(0,0,0,1);
+-webkit-transition: text-shadow 0.5s; 
+-moz-transition: text-shadow 0.5s;
+}
