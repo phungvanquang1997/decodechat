@@ -285,9 +285,6 @@ $(function() {
           "Content-Type": "application/json",
           "Accept": "*/*",
           "Cache-Control": "no-cache",
-          "accept-encoding": "gzip, deflate",
-          "Connection": "keep-alive",
-          "cache-control": "no-cache",
           "Access-Control-Allow-Origin": "https://decodechat.herokuapp.com/",
           "Access-Control-Allow-Credentials": "true"
         },
