@@ -287,7 +287,9 @@ $(function() {
           "Cache-Control": "no-cache",
           "accept-encoding": "gzip, deflate",
           "Connection": "keep-alive",
-          "cache-control": "no-cache"
+          "cache-control": "no-cache",
+          "Access-Control-Allow-Origin": "https://decodechat.herokuapp.com/",
+          "Access-Control-Allow-Credentials": "true"
         },
         "data": JSON.stringify({data: arr}),
       };
