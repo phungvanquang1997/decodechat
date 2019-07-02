@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/api/v1/readfile',(req,res) => {
+app.get('/api/v1/readfile',async function(req,res) => {
   fs.readFile('old_message.json', 'utf-8', (err, data) => {  
     if (err) throw err;
     let oldMessage = JSON.parse(data);
@@ -89,7 +89,8 @@ app.get('/api/v1/readfile',(req,res) => {
   });
 });
 
-app.post('/api/v1/writefile',(req,res) => {
+app.post('/api/v1/writefile',async function(req,res) => {
   console.log(JSON.stringify(req.body.data));
   fs.writeFileSync("old_message.json",  JSON.stringify(req.body.data));
 });
+
