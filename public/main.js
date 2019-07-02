@@ -279,7 +279,7 @@ $(function() {
     var settings = {
         "async": true,
         "crossDomain": true,
-        "url": "http://localhost:3000/api/v1/writefile",
+        "url": "/api/v1/writefile",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json",
