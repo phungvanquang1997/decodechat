@@ -8,7 +8,10 @@ $(function() {
   ];
 
   loadOldMessages = function(){
-    $.ajax({url: '/api/v1/readfile', success: function(result){
+    $.ajax({
+      "async": true,
+      url: '/api/v1/readfile', 
+      success: function(result){
        result.forEach(function(item) {
           addChatMessage({
             username: item.username,
