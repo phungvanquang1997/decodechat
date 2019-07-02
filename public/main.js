@@ -9,8 +9,12 @@ $(function() {
 
   loadOldMessages = function(){
     $.ajax({url: '/api/v1/readfile', success: function(result){
-       //$('.messages').append(result.data);
-       addMessageElement(result.data,{prepend: false});
+       result.forEach(function(item) {
+          addChatMessage({
+            username: item.username,
+            message: item.message
+          })
+       });
     }});
   }
 
@@ -250,13 +254,29 @@ $(function() {
     addChatMessage(data);
   });
 
+  var arr = [];
+  function insert(username, message) {
+    arr.push({
+        username: username,
+        message: message
+    });        
+  }
+
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', (data) => {
     log(data.username + ' joined');
     addParticipantsMessage(data);
-    oldMessages = $('.messages').html();
+    var message = [];
+    var username = [];
+    $(".username").each(function () {
+      username.push($(this).text());
+    });
 
-      var settings = {
+    $(".messageBody").each(function (i) {
+      insert(username[i], $(this).text());
+    });
+
+    var settings = {
         "async": true,
         "crossDomain": true,
         "url": "http://localhost:3000/api/v1/writefile",
@@ -269,40 +289,16 @@ $(function() {
           "Connection": "keep-alive",
           "cache-control": "no-cache"
         },
-        "data": JSON.stringify({data: oldMessages}),
+        "data": JSON.stringify({data: arr}),
       };
 
     $.ajax(settings).done(function (response) {
       console.log(response);
-    });
+    }); 
   });
 
   // Whenever the server emits 'user left', log it in the chat body
   socket.on('user left', (data) => {
-    if(data.numUsers == 1) {
-      oldMessages = $('.messages').html();
-
-      var settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "http://localhost:3000/api/v1/writefile",
-        "method": "POST",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "*/*",
-          "Cache-Control": "no-cache",
-          "accept-encoding": "gzip, deflate",
-          "Connection": "keep-alive",
-          "cache-control": "no-cache"
-        },
-        "data": JSON.stringify({data: oldMessages}),
-      };
-
-    $.ajax(settings).done(function (response) {
-      console.log(response);
-    });
-
-    } 
     log(data.username + ' left');
     addParticipantsMessage(data);
     removeChatTyping(data);

@@ -81,16 +81,15 @@ io.on('connection', (socket) => {
 });
 
 app.get('/api/v1/readfile',(req,res) => {
-  fs.readFile('old_message.txt',"utf-8", (err, data) => {
-      if (err) { console.log(err) }
-      res.send({data: data});
-    });
+  fs.readFile('old_message.json', 'utf-8', (err, data) => {  
+    if (err) throw err;
+    let oldMessage = JSON.parse(data);
+    console.log(oldMessage);
+    res.send(oldMessage);
+  });
 });
 
 app.post('/api/v1/writefile',(req,res) => {
-  fs.appendFile("old_message.txt", req.body.data, (err) => {
-    if (err) console.log(err);
-    console.log("Successfully Written to File.");
-    res.send('ok');
-  });
+  console.log(JSON.stringify(req.body.data));
+  fs.writeFileSync("old_message.json",  JSON.stringify(req.body.data));
 });
